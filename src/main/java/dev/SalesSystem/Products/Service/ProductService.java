@@ -20,7 +20,7 @@ public class ProductService {
         return ResponseEntity.ok(productDao.fetchProduct());
     }
     public ResponseEntity<ProductModel> createProduct(ProductForCreationDTO newProduct){
-        return ResponseEntity.ok(productDao.createProduct(newProduct));
+        return ResponseEntity.ok(productDao.createProduct(new ProductModel(newProduct.getProductName(), newProduct.getDescription(), newProduct.getCategory())));
     }
 
     public ResponseEntity<ProductModel> updateProduct(String id,ProductForCreationDTO updatedProduct){

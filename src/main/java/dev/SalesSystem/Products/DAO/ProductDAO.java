@@ -19,8 +19,8 @@ public class ProductDAO {
         return productRepository.findAll();
     }
     @Transactional
-    public ProductModel createProduct(ProductForCreationDTO newProduct) {
-        return productRepository.save(new ProductModel(newProduct.getProductName(), newProduct.getDescription(), newProduct.getCategory()));
+    public ProductModel createProduct(ProductModel productModel) {
+        return productRepository.save(productModel);
     }
 
     @Transactional
