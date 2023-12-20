@@ -13,15 +13,17 @@ public class ProductModel {
     private String description;
     private String category;
     private Date createdOn;
+    private Long price;
 
     public ProductModel() {
     }
 
-    public ProductModel(String productName, String description, String category) {
+    public ProductModel(String productName, String description, String category,Long price) {
         this.productName = productName;
         this.description = description;
         this.category = category;
         this.createdOn = new Date();
+        this.price=price;
     }
 
     public String getId() {
@@ -62,5 +64,13 @@ public class ProductModel {
 
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public Long getPrice() {
+        return price;
+    }
+
+    public void setPrice(Long price) {
+        this.price = price;
     }
 }

@@ -22,7 +22,9 @@ public class ProductDAO {
     public ProductModel createProduct(ProductModel productModel) {
         return productRepository.save(productModel);
     }
-
+    public Optional<ProductModel> findProductById(String id){
+        return productRepository.findById(id);
+    }
     @Transactional
     public ProductModel updateProduct(String productId, ProductForCreationDTO updatedProduct) {
         Optional<ProductModel> product = productRepository.findById(productId);
