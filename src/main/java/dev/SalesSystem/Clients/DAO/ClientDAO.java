@@ -16,6 +16,9 @@ public class ClientDAO {
     public List<ClientModel> fetchClients (){
         return clientRepository.findAll();
     }
+    public Optional<ClientModel> findClientById(String id){
+        return clientRepository.findById(id);
+    }
     @Transactional
     public ClientModel createClient(ClientModel clientModel) {
         return clientRepository.save(clientModel);
