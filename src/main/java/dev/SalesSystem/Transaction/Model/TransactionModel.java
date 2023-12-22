@@ -8,12 +8,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class TransactionModel {
     @Id
     private String id;
-    private ProductModel product;
+    private String productId;
+    private Long price;
     private int quantity;
 
-    public TransactionModel(ProductModel product, int quantity) {
-        this.product = product;
+    public TransactionModel(String productId, int quantity, Long price) {
+        this.productId = productId;
         this.quantity = quantity;
+        this.price=price;
     }
 
     public TransactionModel() {
@@ -27,12 +29,12 @@ public class TransactionModel {
         this.id = id;
     }
 
-    public ProductModel getProduct() {
-        return product;
+    public String getProductId() {
+        return productId;
     }
 
-    public void setProduct(ProductModel product) {
-        this.product = product;
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
     public int getQuantity() {
@@ -42,7 +44,15 @@ public class TransactionModel {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-    public long price(){
-        return quantity*product.getPrice();
+
+    public Long getPrice() {
+        return price;
+    }
+
+    public void setPrice(Long price) {
+        this.price = price;
+    }
+    public Long total(){
+        return price*quantity;
     }
 }

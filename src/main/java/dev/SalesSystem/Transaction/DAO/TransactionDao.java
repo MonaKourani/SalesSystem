@@ -16,6 +16,9 @@ public class TransactionDao {
     public List<TransactionModel> fetchTransaction (){
         return transactionRepository.findAll();
     }
+    public  List<TransactionModel> createTransaction(List<TransactionModel> transactions){
+        return transactionRepository.saveAll(transactions);
+    }
     public Optional<TransactionModel> findTransactionById(String id){
         return transactionRepository.findById((id));
     }

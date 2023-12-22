@@ -1,22 +1,19 @@
 package dev.SalesSystem.Sales.Service;
 
 import dev.SalesSystem.Clients.DAO.ClientDAO;
-import dev.SalesSystem.Clients.DTO.ClientForCreationDTO;
-import dev.SalesSystem.Clients.Model.ClientModel;
 import dev.SalesSystem.Products.DAO.ProductDAO;
 import dev.SalesSystem.Sales.DAO.SalesDAO;
 import dev.SalesSystem.Sales.DTO.SalesForCreationDTO;
 import dev.SalesSystem.Sales.Model.SalesModel;
-import dev.SalesSystem.SalesSystemApplication;
 import dev.SalesSystem.Transaction.DAO.TransactionDao;
 import dev.SalesSystem.Transaction.Model.TransactionModel;
-import dev.SalesSystem.Transaction.Repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SalesService {
@@ -33,18 +30,35 @@ public class SalesService {
         return ResponseEntity.ok(salesDAO.fetchSales());
     }
     public ResponseEntity<SalesModel> createSale(SalesForCreationDTO sale){
-        if(clientDAO.findClientById(sale.getClient().getId()).isEmpty()){
+        if(clientDAO.findClientById(sale.getClientId()).isEmpty()){
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(salesDAO.createSale(new SalesModel(sale.getClient(), sale.getSeller(), sale.getTransactions())));
+        if (sale.getTransactions().stream().anyMatch(tfc ->
+                productDAO.findProductById(tfc.getProductId()).isEmpty())) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<TransactionModel> list=sale.getTransactions().stream()
+                .map(tfc -> {
+                    Long price = productDAO.findProductById(tfc.getProductId()).get().getPrice();
+                    return( new TransactionModel( tfc.getProductId(), tfc.getQuantity(), price));
+                })
+                .collect(Collectors.toList());
+        transactionDao.createTransaction(list);
+        return ResponseEntity.ok(salesDAO.createSale(new SalesModel(clientDAO.findClientById(sale.getClientId()).get(), sale.getSeller(), list)));
     }
 
     public ResponseEntity<SalesModel> updateSale(String saleId, String transactionId, TransactionModel transactionModel){
         Optional<SalesModel> oldSale= salesDAO.findSaleById(saleId);
-        if(oldSale.isEmpty()){
+        Optional<TransactionModel> oldTransaction= transactionDao.findTransactionById(transactionId);
+        if(oldSale.isEmpty() || oldTransaction.isEmpty() ){
             return ResponseEntity.badRequest().build();
         }
         SalesModel sale=oldSale.get();
-        return ResponseEntity.ok(salesDAO.updateSale(saleId,new SalesModel());
+        TransactionModel trans =oldTransaction.get();
+        List<TransactionModel> list=sale.getTransactions();
+        list.remove(trans);
+        list.add(transactionModel);
+        sale.setTransactions(list);
+        return ResponseEntity.ok(salesDAO.updateSale(saleId,sale));
     }
 }

@@ -25,7 +25,7 @@ public class SalesModel {
         this.client = client;
         this.seller = seller;
         this.transactions = transactions;
-        this.total=transactions.stream().mapToLong(TransactionModel::price).sum();
+        this.total=transactions.stream().mapToLong(TransactionModel::total).sum();
         this.createdOn= new Date();
     }
 

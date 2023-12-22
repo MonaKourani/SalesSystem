@@ -34,6 +34,7 @@ public class ProductDAO {
             existingProduct.setProductName(updatedProduct.getProductName());
             existingProduct.setDescription(updatedProduct.getDescription());
             existingProduct.setCategory(updatedProduct.getCategory());
+            existingProduct.setPrice(updatedProduct.getPrice());
             return productRepository.save(existingProduct);
         } else {
             throw new IllegalStateException("Product not found with ID: " + productId);
